@@ -10,14 +10,21 @@
 #include <sel4runtime/mode/elf.h>
 
 // Entry into C program.
-int main();
+int main(
+    unsigned long argc,
+    char const *const *argv,
+    char const *const *envp);
 
 /*
  * The this triggers the environment to be set up for the runtime before
  * the environment is loaded.
  */
 void __sel4runtime_start_main(
-    int (*main)(),
+    int (*main_ptr)(
+        unsigned long argc,
+        char const *const *argv,
+        char const *const *envp
+    ),
     unsigned long argc,
     char const *const *argv,
     char const *const *envp,

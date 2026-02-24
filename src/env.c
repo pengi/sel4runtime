@@ -99,9 +99,11 @@ static sel4runtime_uintptr_t tls_base_from_tls_region(unsigned char *tls_region)
 static unsigned char *tls_from_tls_base(sel4runtime_uintptr_t tls_base);
 static unsigned char *tls_from_tls_region(unsigned char *tls_region);
 static thread_lookup_t *thread_lookup_from_tls_region(unsigned char *tls_region);
-static const sel4runtime_size_t tls_region_size(sel4runtime_size_t mem_size, sel4runtime_size_t align);
+static sel4runtime_size_t tls_region_size(sel4runtime_size_t mem_size, sel4runtime_size_t align);
 static void empty_tls(void);
+#if 0 /* not used */
 static int is_initial_thread(void);
+#endif
 
 char const *sel4runtime_process_name(void)
 {
@@ -399,6 +401,7 @@ static thread_lookup_t *thread_lookup_from_tls_region(
     unsigned char *tls_region
 )
 {
+    (void)tls_region;
 #if !defined(TLS_ABOVE_TP)
     return (thread_lookup_t *)tls_base_from_tls_region(tls_region);
 #else
@@ -406,7 +409,7 @@ static thread_lookup_t *thread_lookup_from_tls_region(
 #endif
 }
 
-static const sel4runtime_size_t tls_region_size(sel4runtime_size_t mem_size, sel4runtime_size_t align)
+static sel4runtime_size_t tls_region_size(sel4runtime_size_t mem_size, sel4runtime_size_t align)
 {
     return align
            + ROUND_UP(sizeof(thread_lookup_t), align)
@@ -434,8 +437,10 @@ static void empty_tls(void)
  * This will optimistically assume that the current thread is the
  * initial thread of no thread ever had TLS configured.
  */
+#if 0 /* not used */
 static int is_initial_thread(void)
 {
     return env.initial_thread_tls_base == (sel4runtime_uintptr_t)SEL4RUNTIME_NULL
            || sel4runtime_get_tls_base() == env.initial_thread_tls_base;
 }
+#endif

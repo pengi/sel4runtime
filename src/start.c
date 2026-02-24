@@ -8,7 +8,11 @@
 #include <sel4runtime/start.h>
 
 void __sel4runtime_start_main(
-    int (*main)(),
+    int (*main_ptr)(
+        unsigned long argc,
+        char const *const *argv,
+        char const *const *envp
+    ),
     unsigned long argc,
     char const *const *argv,
     char const *const *envp,
@@ -17,5 +21,5 @@ void __sel4runtime_start_main(
 {
     __sel4runtime_load_env(argc, argv, envp, auxv);
 
-    sel4runtime_exit(main(argc, argv, envp));
+    sel4runtime_exit(main_ptr(argc, argv, envp));
 }

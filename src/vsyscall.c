@@ -7,6 +7,7 @@
 /* If no vsyscall implementation is provided, this dummy one is used. */
 long __sel4runtime_vsyscall(long sysnum, ...)
 {
+    (void)sysnum;
     return -1;
 }
 
