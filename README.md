@@ -4,6 +4,11 @@
      SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 
+# About this fork
+
+This is updated to be a standalone build using gnumake instead of cmake,
+to simplify integration with other build systems.
+
 # The seL4 Run-time
 
 This provides a minimal runtime for running a C or C-compatible process, 
