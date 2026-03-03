@@ -23,6 +23,18 @@ SRCS=\
 	src/start_root.c \
 	src/vsyscall.c
 
+OUTINCL=\
+	$(OUT)/include/sel4runtime.h \
+	$(OUT)/include/sel4runtime/mode/elf.h \
+	$(OUT)/include/sel4runtime/start.h \
+	$(OUT)/include/sel4runtime/gen_config.h \
+	$(OUT)/include/sel4runtime/stddef.h \
+	$(OUT)/include/sel4runtime/elf.h \
+	$(OUT)/include/sel4runtime/thread.h \
+	$(OUT)/include/sel4runtime/stdint.h \
+	$(OUT)/include/sel4runtime/auxv.h \
+	$(OUT)/include/sel4runtime/thread_arch.h
+
 ifneq (,$(filter $(SEL4_ARCH),aarch32 arm_hyp))
 SRCS+=\
 	src/sel4_arch/$(SEL4_ARCH)/__aeabi_read_tp_c.c \
@@ -52,8 +64,13 @@ LDFLAGS=\
 	$(BASE_LDFLAGS) \
 	--relocatable
 
-all: $(OUT)/lib/sel4runtime.o
-.PHONY: all
+all: $(OUT)/lib/sel4runtime.o $(OUTINCL)
+
+clean: FORCE
+	rm -rf $(OUT) $(BUILD)
+
+FORCE:
+.PHONY: all clean FORCE
 
 $(OUT)/lib/sel4runtime.o: $(OBJS)
 	@mkdir -p $(@D)
@@ -70,3 +87,16 @@ $(BUILD)/sel4_bootinfo.o: $(SEL4)/libsel4/src/sel4_bootinfo.c
 $(BUILD)/%.o: %.S
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c -o $@ $^
+
+
+$(OUT)/include/%.h: include/%.h
+	@mkdir -p $(@D)
+	cp $^ $@
+
+$(OUT)/include/%.h: include/mode/$(SEL4_MODE)/%.h
+	@mkdir -p $(@D)
+	cp $^ $@
+
+$(OUT)/include/%.h: include/sel4_arch/$(SEL4_ARCH)/%.h
+	@mkdir -p $(@D)
+	cp $^ $@
